@@ -1,39 +1,32 @@
-module.exports = (sequelize, DataTypes) => {
+const sequelize = require("sequelize");
 
-    const User = sequelize.define("user", {
-        id: {
-            type: DataTypes.INTEGER,
-            autoIncrement: true,
-            primaryKey: true,
-            allowNull: false
-        },
-        first_name: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        last_name: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        username: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        password: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        account_created: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        account_updated: {
-            type: DataTypes.STRING,
-            allowNull: false
-        }
+const db = require(__dirname + "/../services/service.js");
+
+const User = db.define('User', {
+    id: {
+      type: sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
     },
-    {
-        timestamps: false
-    })
-    return User
-}
+    first_name: {
+      type: sequelize.STRING,
+      allowNull: false,
+    },
+    last_name: {
+      type: sequelize.STRING,
+      allowNull: false,
+    },
+    username: {
+      type: sequelize.STRING,
+      allowNull: false,
+    },
+    password: {
+      type: sequelize.STRING,
+      allowNull: false,
+    },
+  }, {
+    createdAt: 'account_created',
+    updatedAt: 'account_updated'
+  });
+
+  module.exports = User;

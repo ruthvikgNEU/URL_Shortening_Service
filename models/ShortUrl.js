@@ -26,4 +26,4 @@ const ShortUrl = db.define('ShortUrl', {
     updatedAt: 'check_updated'
   });
 
-  module.exports = ShortUrl;
+module.exports = ShortUrl;

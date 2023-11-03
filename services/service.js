@@ -1,4 +1,4 @@
-const { Sequelize } = require("sequelize");
+const { Sequelize, DataTypes } = require("sequelize");
 const db = new Sequelize(
   process.env.POSTGRES_DB,
   process.env.POSTGRES_USER,
