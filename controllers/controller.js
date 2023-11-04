@@ -47,6 +47,7 @@ const addUser = async (req, res) => {
     var last_name = req.body.last_name
     var username = req.body.username
     var password = req.body.password
+    var max_urls = req.body.max_urls
     var dateObj = new Date()
     var date = dateObj.toJSON()
 
@@ -70,6 +71,7 @@ const addUser = async (req, res) => {
             last_name: last_name,
             username: username,
             password: hash,
+            max_urls: max_urls,
             account_created: date,
             account_updated: date
         }
