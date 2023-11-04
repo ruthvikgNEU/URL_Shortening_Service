@@ -140,7 +140,27 @@ GET /getMyDetails
     "account_updated": "2023-11-04T15:58:36.194Z"
 }
 ```
-
+#### Sample JSON Response for /getUrls endpoint:
+```JSON
+[
+    {
+        "id": 4,
+        "user_id": 2,
+        "longUrl": "https://ruthivk.com/;iusahd'dskjnfskdjfbkjsdfljsbf lkjs chfksjnkjsdbvkjxmnjdbnvkjdvkcjs hfksdhflknsd hfkjshflkjsdfhkjsdfbkbhsdfjkhsbdfkjh",
+        "shortUrl": "http://shorturl.ly/9d9c4476",
+        "url_created": "2023-11-04T15:58:18.155Z",
+        "updatedAt": "2023-11-04T15:58:18.155Z"
+    },
+    {
+        "id": 5,
+        "user_id": 2,
+        "longUrl": "https://ruthivk.com/sdfdsfsdcfxsaffjhglskjLBKJNxdhkj/;iusahd'dskjnfskdjfbkjsdfljsbf lkjs chfksjnkjsdbvkjxmnjdbnvkjdvkcjs hfsdffsdfdsfsksdhflknsd hfkjshflkjsdfhkjsdfbkbhsdfjkhsbdfkjh",
+        "shortUrl": "http://shorturl.ly/337b5e8b",
+        "url_created": "2023-11-04T15:58:36.188Z",
+        "updatedAt": "2023-11-04T15:58:36.188Z"
+    }
+]
+```
 
 
 
