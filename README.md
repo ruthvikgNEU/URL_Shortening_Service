@@ -18,7 +18,7 @@
 
 ### Packages required to run:
 - Express
-- Pg, pg-hstore
+- Pg
 - Sequelize
 - Chai
 - Mocha
