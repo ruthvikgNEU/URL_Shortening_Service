@@ -24,6 +24,16 @@ const User = db.define('User', {
       type: sequelize.STRING,
       allowNull: false,
     },
+    max_urls: {
+      type: sequelize.INTEGER,
+      allowNull: false,
+      defaultValue: 1000,
+    },
+    curr_urls: {
+      type: sequelize.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
   }, {
     createdAt: 'account_created',
     updatedAt: 'account_updated'

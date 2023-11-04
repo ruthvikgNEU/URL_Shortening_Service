@@ -22,8 +22,8 @@ const ShortUrl = db.define('ShortUrl', {
       allowNull: false,
     },
   }, {
-    createdAt: 'check_created',
-    updatedAt: 'check_updated'
+    createdAt: 'url_created',
+    timstamp: false
   });
 
 module.exports = ShortUrl;

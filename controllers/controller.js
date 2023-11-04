@@ -1,5 +1,5 @@
 const db = require("../services/service");
-
+const crypto = require('crypto');
 const ShortUrl = require("../models/ShortUrl");
 const User = require("../models/User");
 const bcrypt = require('bcrypt');
@@ -17,7 +17,18 @@ const healthz = async (req, res) => {
     .catch((error) => {
         res.status(503).set("Cache-Control", "no-cache").end();
     });
+
 }
+
+
+
+function hashString(inputString) {
+    const hash = crypto.createHash('sha256');
+    hash.update(inputString);
+    return hash.digest('hex');
+}
+
+
 
 const addUser = async (req, res) => {
     // checks if request body exists, if not returns a bad request
@@ -77,12 +88,115 @@ const addUser = async (req, res) => {
     return res.status(400).send('User Not Created')
 }
 
-const addUrl = async (req, res) => {
 
+var userId = -1;
+async function authenticate (req) {
+    // decodes authorization header to fetch username and password
+    var credentials = Buffer.from(req.get('Authorization').split(' ')[1], 'base64').toString().split(':')
+    var username = credentials[0]
+    var password = credentials[1]
+  
+      // finding the user with specified username
+    let user = await User.findOne({where: { username: username }})
+
+    //compares user id passed to that of user id found via username passed
+    if(user != null){
+        // compare user password with stored hash
+        const authenticated = await bcrypt.compare(password, user.password)
+        userId = user.id;
+        return authenticated
+    }
+    return false
+}
+function isAuthDetails(req){
+    var credentials = Buffer.from(req.get('Authorization').split(' ')[1], 'base64').toString().split(':')
+    var username = credentials[0]
+    var password = credentials[1]
+    if(username != '' && password != '')
+    return true;
+    return false;
+}
+const addUrl = async (req, res) => {
+    if(req.body.longUrl == null){
+        return res.status(400).send('Request Body Missing Required Fields')
+    }
+    if(!req.get('Authorization')){
+        return res.status(401).send('Select Basic Authorization')
+    }
+    if(!isAuthDetails(req)){
+        console.log(req.get('Authorization'))
+        
+        return res.status(401).send('Email or Password Missing')
+    }
+    var authenticated4 = await authenticate(req)
+    if(authenticated4 != true){
+        return res.status(403).send('Invalid Username Password')
+    }
+    
+    const hashedString = hashString(req.body.longUrl);
+    var UrlCheck = await ShortUrl.findOne({where: {longUrl: req.body.longUrl}});
+  
+    if(UrlCheck != null){
+        return res.status(400).send('Url already exists')
+    }
+    var limitCheck = await User.findOne({where: {id: userId}});
+    if(limitCheck.max_urls == 0){
+        return res.status(400).send('Max Url Limit Reached')
+    }
+    var user_id = userId;
+    var longUrl = req.body.longUrl;
+    var shortUrl = 'http://shorturl.ly/'+hashedString.substring(0, 8);
+    await ShortUrl.create({user_id: user_id, longUrl: longUrl, shortUrl: shortUrl});
+    User.findOne({where: {id: user_id}}).then(user => {
+        user.increment('curr_urls');
+        user.decrement('max_urls');
+    });
+    var response = await ShortUrl.findOne({where: {shortUrl: shortUrl}});
+    res.status(201).send(response);
+}
+
+const getUrlsUponId = async (req, res) => {
+    if(!req.get('Authorization')){
+        return res.status(401).send('Select Basic Authorization')
+    }
+    if(!isAuthDetails(req)){
+        
+        return res.status(401).send('Email or Password Missing')
+    }
+    var authenticated4 = await authenticate(req)
+    if(authenticated4 != true){
+        return res.status(403).send('Invalid Username Password')
+    }
+
+const urls = await ShortUrl.findAll({where: {user_id: userId}});
+res.status(200).send(urls);
 
 }
 
+const getAll = async (req, res) => {
+var urls = await ShortUrl.findAll();
+res.status(200).send(urls);
+
+}
+
+const getDetails =  async (req, res) => {
+    if(!req.get('Authorization')){
+        return res.status(401).send('Select Basic Authorization')
+    }
+    if(!isAuthDetails(req)){
+        console.log(req.get('Authorization'))
+        
+        return res.status(401).send('Email or Password Missing')
+    }
+    var authenticated4 = await authenticate(req)
+    if(authenticated4 != true){
+        return res.status(403).send('Invalid Username Password')
+    }
+    let details = await User.findOne({where: { id: userId },
+        attributes: { exclude: [ 'password' ]}})
+    res.status(200).send(details);
+}
 
 module.exports = {
-    healthz,addUser
+    healthz,addUser,addUrl,getUrlsUponId,getAll,getDetails
 }
