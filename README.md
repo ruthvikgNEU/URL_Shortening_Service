@@ -1,4 +1,4 @@
-# Tram Global - Backend Engineer Intern Assessment
+
  ### Project Description
  The project involves developing a URL shortening service with specific functionalities and access control based on user tiers:
 
